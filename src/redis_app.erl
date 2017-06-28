@@ -39,6 +39,7 @@
 
 %%  在这里启动根监督者
 start(_StartType, _StartArgs) ->
+  redis_store:init(),
   case redis_sup:start_link() of
     {ok, Pid} ->
       {ok, Pid};
