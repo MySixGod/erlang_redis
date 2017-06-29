@@ -12,6 +12,21 @@
 %% API
 -compile(export_all).
 
+-record(mail,{
+  a=1,
+  b=2
+}).
+
 say() ->
-  {hellosa}.
+  {#mail.a,#mail.b}.
+
+
+
+~~
+
+
+
+
+
+
 
