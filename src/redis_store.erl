@@ -21,7 +21,7 @@ insert(Key,Pid) ->
   ets:insert(?TABLE_ID,{Key,Pid}).
 
 lookup(Key) ->
-  case ets:lookup(?TABLE_ID,{Key,'_'}) of
+  case ets:lookup(?TABLE_ID,Key) of
     [{Key,Pid}] -> {ok,Pid};
     _ -> {error,not_found}
   end.

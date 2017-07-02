@@ -12,7 +12,7 @@
 -behaviour(application).
 
 %% Application callbacks
--export([start/2,
+-export([start/0,
   stop/1]).
 
 %%%===================================================================
@@ -30,15 +30,10 @@
 %%
 %% @end
 %%--------------------------------------------------------------------
--spec(start(StartType :: normal | {takeover, node()} | {failover, node()},
-    StartArgs :: term()) ->
-  {ok, pid()} |
-  {ok, pid(), State :: term()} |
-  {error, Reason :: term()}).
 
 
 %%  在这里启动根监督者
-start(_StartType, _StartArgs) ->
+start() ->
   redis_store:init(),
   case redis_sup:start_link() of
     {ok, Pid} ->

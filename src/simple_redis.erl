@@ -40,5 +40,5 @@ lookup(Key) ->
             Value
         end;
       {error,Message} ->
-        io:format("~p~n",[Message])
+        io:format("error ~p~n",[Message])
     end.
