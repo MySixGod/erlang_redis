@@ -6,4 +6,4 @@
               {mod,{erlang_otp,[]}},
               {env,[]},
               {modules,[demo1,redis_app,redis_element,redis_store,redis_sup,
-                        simple_redis]}]}.
+                        sa,simple_redis]}]}.
