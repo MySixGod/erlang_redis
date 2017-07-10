@@ -1,0 +1,19 @@
+%%%-------------------------------------------------------------------
+%%% @author Administrator
+%%% @copyright (C) 2017, <COMPANY>
+%%% @doc
+%%%
+%%% @end
+%%% Created : 07. 七月 2017 15:57
+%%%-------------------------------------------------------------------
+{application, erlang_otp, [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+    kernel,
+    stdlib
+  ]},
+  {mod, {erlang_otp, []}},
+  {env, []}
+]}.
