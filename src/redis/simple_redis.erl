@@ -15,10 +15,13 @@
 add(Key,Value) ->
   case redis_store:lookup(Key) of
 %%    更新进程存储的数据
-    {ok,Pid} ->redis_element:replace(Pid,Value);
+    {ok,Pid} ->
+      redis_event:replace(Key,Value),
+      redis_element:replace(Pid,Value);
     {error,_} ->
 %%      没有就先创建一个进程
       {ok,Pid}=redis_element:create(Value),
+      redis_event:add(Key,Value),
       redis_store:insert(Key,Pid)
   end.
 
@@ -27,6 +30,7 @@ delete_element(Key)->
     {ok,Pid} ->
 %%      也可以不结束进程，让它超时自动销毁
       gen_server:stop(Pid,normal,1000),
+      redis_event:delete(Key),
       redis_store:delete(Pid);
     {error,Message} ->
       io:format("~p~n",[Message])
@@ -37,6 +41,7 @@ lookup(Key) ->
       {ok,Pid} ->
         case redis_element:fetch(Pid) of
           {ok,Value} ->
+            redis_event:lookup(Key),
             Value
         end;
       {error,Message} ->

@@ -20,6 +20,20 @@
 say() ->
   {#mail.a,#mail.b}.
 
+start() ->
+  {ok,Listen} = gen_tcp:listen(8888,[binary,{package,0},{active,true}]),
+  {ok,Socket}=gen_tcp:accept(Listen),
+  receive
+    {tcp,Socket,Bin} ->
+      [Bin]
+  end.
+
+
+test_dict() ->
+  A=dict:new(),
+  B=dict:store(key,value,A),
+  C=dict:from_list([{key,value2},{key,value}]),
+  io:format("~p~n",[dict:size(C)]).
 
 
 

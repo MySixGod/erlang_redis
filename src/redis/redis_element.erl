@@ -29,9 +29,8 @@
 %%  状态记录
 -record(state, {value,lease_time,start_time}).
 
-
 start_link(Value,LeaseTime) ->
-  gen_server:start_link({local, ?SERVER}, ?MODULE, [Value,LeaseTime], []).
+  gen_server:start_link(?MODULE, [Value,LeaseTime], []).
 
 create(Value,LeaseTime) ->
   redis_sup:start_child(Value,LeaseTime).
@@ -64,7 +63,7 @@ time_left(StartTime,LeaseTime) ->
   Now=calendar:local_time(),
   CurrentTiem=calendar:datetime_to_gregorian_seconds(Now),
   TimeElapased=CurrentTiem-StartTime,
-  case LeaseTime-TimeElapased of
+  case LeaseTime - TimeElapased of
     Time when Time<0 -> 0;
     Time -> Time*1000
   end.

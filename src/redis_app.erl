@@ -20,14 +20,16 @@ start(_,_) ->
 
 %%  在这里启动根监督者
 start() ->
-  redis_store:init(),
-  case redis_sup:start_link() of
+  case gen_sup:start_link() of
     {ok, Pid} ->
+      %%      初始化ets
+      redis_store:init(),
+      %%      添加处理者
+      redis_event_logger:add_handler(),
       {ok, Pid};
     Error ->
       Error
   end.
-
 
 stop(_State) ->
   ok.
