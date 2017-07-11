@@ -4,6 +4,7 @@
 %%% @doc
 %%%   实现分布式资源的探测:每个节点单独启动，提供自己的资源，并能获取其他节点的资源(注意：所有不同资源的key必须保持不同，否则可能在
 %%%   对资源进行合并的时候回丢失资源)
+%%% TODO 周期性对节点的资源进行检测,清空失效的资源
 %%% @end
 %%% Created : 10. 七月 2017 19:08
 %%%-------------------------------------------------------------------
@@ -73,8 +74,8 @@ handle_cast({reply_resource,NeedResourceList}, State) ->
 handle_cast({add_local_resource,{Key,Value}}, State) ->
   OldLocalResource = State#state.local_resource,
   NewLocalResource = OldLocalResource ++ [{Key,Value}],
-  {noreply,State#state{local_resource = NewLocalResource}},
-  erlang:send_after(1000,self(),{resource_init,?NODES});
+  erlang:send_after(1000,self(),{resource_init,?NODES}),
+  {noreply,State#state{local_resource = NewLocalResource}};
 %%  添加目标资源
 handle_cast({add_target_resource,Key}, State) ->
   {noreply,State#state{target_resource = State#state.target_resource++Key}}.
@@ -88,25 +89,24 @@ handle_info(resource_init, State) ->
   {noreply, State};
 
 handle_info({my_resource,Pid,Dict,TargetResource}, State) ->
-  List=[],
 %%  查看是否有自己需要的资源1.修复无法重复存储Value的问题
   TargetResourceList = lists:foldl(
-    fun(Key) ->
+    fun(Key,Acc) ->
       case dict:find(Key,Dict) of
-        {ok,Value}->[{Key,Value}|List];
-        error ->List
+        {ok,Value}->[{Key,Value}|Acc];
+        error ->Acc
        end
-    end,List,State#state.target_resource),
+    end,[],State#state.target_resource),
     NewFoundResource = dict:from_list(TargetResourceList ++ dict:to_list(State#state.found_resource)),
 
 %%  查看是否持有发送者需要的资源
   NeedResourceList = lists:foldl(
-    fun(Key) ->
+    fun(Key,Acc) ->
       case dict:find(Key,State#state.local_resource) of
-        {ok,Value}->[{Key,Value}|List];
-        error ->List
+        {ok,Value}->[{Key,Value}|Acc];
+        error ->Acc
       end
-    end,List,TargetResource),
+    end,[],TargetResource),
 %%  将对方需要的资源返回
   gen_server:cast(Pid,{reply_resource,NeedResourceList}),
 %%  更新线程状态

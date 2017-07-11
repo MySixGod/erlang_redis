@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/erlang_otp.iml" filepath="$PROJECT_DIR$/erlang_otp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/erlang_redis.iml" filepath="$PROJECT_DIR$/erlang_redis.iml" />
     </modules>
   </component>
 </project>

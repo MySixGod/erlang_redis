@@ -5,6 +5,6 @@
               {applications,[kernel,stdlib]},
               {mod,{erlang_otp,[]}},
               {env,[]},
-              {modules,[demo1,exception,gen_sup,redis_app,redis_element,
+              {modules,[d1,demo1,exception,gen_sup,redis_app,redis_element,
                         redis_event,redis_event_logger,redis_store,redis_sup,
-                        resource_discovery,sa,simple_redis,unit]}]}.
+                        resource_discovery,sa,simple_redis,test,unit]}]}.
