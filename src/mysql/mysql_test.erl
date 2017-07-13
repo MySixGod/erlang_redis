@@ -36,10 +36,6 @@ look() ->
 
 
 
-
-
-
-
 %%query() ->
 %%  Pid = get_connect(),
 %%  Result = mysql:transaction(Pid, fun() ->
