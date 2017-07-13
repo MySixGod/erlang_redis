@@ -1,0 +1,12 @@
+{application,erlang_redis,
+             [{description,"a simple redis"},
+              {vsn,"0.1.0"},
+              {registered,[]},
+              {applications,[kernel,stdlib,mysql,example]},
+              {mod,{erlang_redis,[]}},
+              {env,[]},
+              {modules,[d1,demo1,erlang_redis,exception,fsm,fsm_tem,gen_sup,
+                        mysql_test,poolboy,pushbutton,recursive,redis_app,
+                        redis_element,redis_event,redis_event_logger,
+                        redis_store,redis_sup,resource_discovery,sa,
+                        simple_redis,test,test_statem,unit]}]}.

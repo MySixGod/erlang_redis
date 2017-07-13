@@ -1,12 +1,12 @@
 %%%-------------------------------------------------------------------
-%%% @author Administrator
+%%% @author cwt
 %%% @copyright (C) 2017, <COMPANY>
 %%% @doc
 %%%
 %%% @end
 %%% Created : 11. 七月 2017 16:30
 %%%-------------------------------------------------------------------
--module(d1).
+-module(recursive).
 -author("cwt").
 
 %% API
@@ -47,4 +47,39 @@ sublist(List, N) -> sublist(List, N, []).
 
 sublist(_, 0, NewList) -> NewList;
 sublist([Top, Last], N, NewList) when N > 0 -> sublist(Last, N - 1, [Top | NewList]).
+
+s1(A) ->
+  if 2 > A ->
+    io:format("true");
+    1 < 2 -> skip
+  end.
+
+
+%%  实现快速排序
+quick_sort([]) ->
+  [];
+quick_sort([Mid | Rest]) ->
+  {Left, Right} = partition(Mid, Rest, [], []),
+  quick_sort(Left) ++ [Mid] ++ quick_sort(Right).
+
+partition(_, [], Left, Right) ->
+  {Left, Right};
+partition(Mid, [Top | Rest], Left, Right) ->
+  case Top < Mid of
+    true -> partition(Mid, Rest, [Top | Left], Right);
+    false -> partition(Mid, Rest, Left, [Right | Top])
+  end.
+
+%%  快排
+lc_quick_sort([]) -> [];
+lc_quick_sort([Mid | Rest]) ->
+  lc_quick_sort([Smaller || Smaller <- Rest, Smaller =< Mid])
+  ++ [Mid] ++ lc_quick_sort([Larger || Larger <- Rest, Larger > Mid]).
+
+
+
+
+
+
+
 

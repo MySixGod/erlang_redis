@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%%% @author Administrator
+%%% @author cwt
 %%% @copyright (C) 2017, <COMPANY>
 %%% @doc
 %%%
@@ -7,7 +7,7 @@
 %%% Created : 28. 六月 2017 11:28
 %%%-------------------------------------------------------------------
 -module(demo1).
--author("Administrator").
+-author("cwt").
 
 %% API
 -compile(export_all).
@@ -31,9 +31,14 @@ start() ->
 
 test_dict() ->
   A=dict:new(),
-  B=dict:store(key,value,A),
+  _=dict:store(key,value,A),
   C=dict:from_list([{key,value2},{key,value}]),
   io:format("~p~n",[dict:size(C)]).
+
+
+say2() ->
+  say().
+
 
 
 

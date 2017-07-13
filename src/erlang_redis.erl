@@ -6,16 +6,16 @@
 %%% @end
 %%% Created : 28. 六月 2017 11:36
 %%%-------------------------------------------------------------------
--module(redis_app).
+-module(erlang_redis).
 -author("cwt").
 
 -behaviour(application).
 
 %% Application callbacks
--export([start/0, start/2, stop/1]).
-
-start(_,_) ->
-  [].
+-compile(export_all).
+start(StartType,StartArgs) ->
+  io:format("StartType:~p   ~n StartArgs:~p ~n",[StartType,StartArgs]),
+  start().
 
 %%  在这里启动根监督者
 start() ->

@@ -1,19 +1,21 @@
 %%%-------------------------------------------------------------------
-%%% @author Administrator
+%%% @author cwt
 %%% @copyright (C) 2017, <COMPANY>
 %%% @doc
 %%%
 %%% @end
-%%% Created : 07. 七月 2017 15:57
+%%% Created : 13. 七月 2017 10:26
 %%%-------------------------------------------------------------------
-{application, erlang_otp, [
-  {description, ""},
-  {vsn, "1"},
+{application, erlang_redis, [
+  {description, "a simple redis"},
+  {vsn, "0.1.0"},
   {registered, []},
   {applications, [
     kernel,
-    stdlib
+    stdlib,
+    mysql,
+    example
   ]},
-  {mod, {erlang_otp, []}},
+  {mod, {erlang_redis, []}},
   {env, []}
 ]}.

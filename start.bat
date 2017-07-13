@@ -1,0 +1,1 @@
+erl -sname redis -boot ./erlang_redis -config ./rel/files/sys -pa ./deps/mysql/ebin ./deps/poolboy/ebin ./apps/example/ebin   -extra abcd

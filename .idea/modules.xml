@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/erlang_redis.iml" filepath="$PROJECT_DIR$/erlang_redis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/apps/example/example.iml" filepath="$PROJECT_DIR$/apps/example/example.iml" />
     </modules>
   </component>
 </project>
