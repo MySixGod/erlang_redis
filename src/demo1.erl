@@ -37,7 +37,18 @@ test_dict() ->
 
 
 say2() ->
-  say().
+  A=fun() -> a end,
+  A().
+
+t() ->
+  try say2()
+  after
+    io:format("clean")
+  end.
+
+
+
+
 
 
 
