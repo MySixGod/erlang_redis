@@ -15,3 +15,5 @@ simple_test() ->
   ?assert(true).
 
 
+say(0) ->
+
