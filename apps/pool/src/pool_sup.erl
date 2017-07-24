@@ -67,7 +67,7 @@ init([]) ->
   Type = worker,
 
   {ok, Pools} = application:get_env(pool, pools),
-%%  {pool1, [{size, 10}, {max_overflow, 20}], []}
+
   PoolSpecs = lists:map(fun({Name, PoolArgs, WorkerArgs}) ->
                           child_spec(Name, PoolArgs, WorkerArgs, Restart, Shutdown, Type)
                         end, Pools),

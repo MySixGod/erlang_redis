@@ -12,7 +12,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/0]).
+-export([start_link/2]).
 
 %% gen_server callbacks
 -export([init/1,
@@ -36,10 +36,9 @@
 %%
 %% @end
 %%--------------------------------------------------------------------
--spec(start_link() ->
-  {ok, Pid :: pid()} | ignore | {error, Reason :: term()}).
-start_link() ->
-  gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+
+start_link(PidName, WorkerArgs) ->
+  gen_server:start_link({local, PidName}, ?MODULE, [WorkerArgs], []).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -56,10 +55,8 @@ start_link() ->
 %%                     {stop, Reason}
 %% @end
 %%--------------------------------------------------------------------
--spec(init(Args :: term()) ->
-  {ok, State :: #state{}} | {ok, State :: #state{}, timeout() | hibernate} |
-  {stop, Reason :: term()} | ignore).
-init([]) ->
+
+init(_WorkerArgs) ->
   {ok, #state{}}.
 
 %%--------------------------------------------------------------------

@@ -74,7 +74,8 @@ init([PoolArgs, WorkerArgs]) ->
 append_child(Size, WorkerArgs) ->
   WorkerQueue = queue:new(),
   [begin
-     {ok, _Pid} = gen_server:start_link(PidName = lists:concat([pool_worker_, WorkerId]), pool_worker, [WorkerArgs], []),
+     PidName = lists:concat([pool_worker_, WorkerId]),
+     {ok, _Pid} = pool_worker:start_link(list_to_atom(PidName), WorkerArgs),
      queue:in(PidName,WorkerQueue)
    end || WorkerId <- lists:seq(1,Size)],
   WorkerQueue.
