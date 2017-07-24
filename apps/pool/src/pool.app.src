@@ -1,0 +1,23 @@
+%%%-------------------------------------------------------------------
+%%% @author cwt  <woshi6ye@gmail.com>
+%%% @copyright (C) 2017, <COMPANY>
+%%% @doc
+%%%
+%%% @end
+%%% Created : 24. 七月 2017 16:16
+%%%-------------------------------------------------------------------
+{application, pool, [
+  {description, "a simple spawn pool"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+    kernel,
+    stdlib
+  ]},
+  {mod, {pool, []}},
+  {env,
+    [
+      {pools, [{pool1, [{size, 10}, {max_overflow, 20}], []}]}
+    ]
+  }
+]}.
