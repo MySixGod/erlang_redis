@@ -2,7 +2,7 @@
              [{description,"a simple redis"},
               {vsn,"0.1.0"},
               {registered,[]},
-              {applications,[kernel,stdlib,mysql,example]},
+              {applications,[kernel,stdlib,mysql,example,test]},
               {mod,{erlang_redis,[]}},
               {env,[]},
               {modules,[d1,demo1,erlang_redis,exception,fsm,fsm_tem,gen_sup,

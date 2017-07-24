@@ -14,7 +14,8 @@
     kernel,
     stdlib,
     mysql,
-    example
+    example,
+    test
   ]},
   {mod, {erlang_redis, []}},
   {env, []}

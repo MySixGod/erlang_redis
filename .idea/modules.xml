@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/erlang_redis.iml" filepath="$PROJECT_DIR$/erlang_redis.iml" />
       <module fileurl="file://$PROJECT_DIR$/apps/example/example.iml" filepath="$PROJECT_DIR$/apps/example/example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/apps/pool/pool.iml" filepath="$PROJECT_DIR$/apps/pool/pool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/deps/test/test.iml" filepath="$PROJECT_DIR$/deps/test/test.iml" />
     </modules>
   </component>
 </project>
