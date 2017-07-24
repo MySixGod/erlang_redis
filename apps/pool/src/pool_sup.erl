@@ -71,7 +71,8 @@ init([]) ->
   PoolSpecs = lists:map(fun({Name, PoolArgs, WorkerArgs}) ->
                           child_spec(Name, PoolArgs, WorkerArgs, Restart, Shutdown, Type)
                         end, Pools),
-  {ok, {SupFlags, [PoolSpecs]}}.
+  io:format("child:~p~n",[PoolSpecs]),
+  {ok, {SupFlags, PoolSpecs}}.
 
 %%%===================================================================
 %%% Internal functions

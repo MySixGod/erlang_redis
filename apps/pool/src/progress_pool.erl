@@ -12,7 +12,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/0]).
+-export([start_link/2]).
 
 %% gen_server callbacks
 -export([init/1,
@@ -39,10 +39,10 @@
 %%
 %% @end
 %%--------------------------------------------------------------------
--spec(start_link() ->
+-spec(start_link(PoolArgs::list(), WorkerArgs::list()) ->
   {ok, Pid :: pid()} | ignore | {error, Reason :: term()}).
-start_link() ->
-  gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+start_link(PoolArgs, WorkerArgs) ->
+  gen_server:start_link({local, ?SERVER}, ?MODULE, [PoolArgs, WorkerArgs], []).
 
 %%%===================================================================
 %%% gen_server callbacks
