@@ -17,6 +17,9 @@
 test1() ->
   progress_pool:execute(test, say, []).
 
+test2() ->
+  progress_pool:execute_1(test, say, []).
+
 t2() ->
   t:start_link(),
   gen_server:call(t,{}, 1000).
