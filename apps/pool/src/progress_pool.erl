@@ -23,9 +23,9 @@
   code_change/3]).
 
 -define(SERVER, ?MODULE).
--define(DEFAULT_SIZE,20).
+-define(DEFAULT_SIZE, 20).
 
--record(state, {workerQueue}).
+-record(state, {workerQueue, size, name}).
 
 -compile(export_all).
 
@@ -65,20 +65,30 @@ start_link(PoolArgs, WorkerArgs) ->
 init([PoolArgs, WorkerArgs]) ->
 %%  默认的进程池大小
   Size = proplists:get_value(size, PoolArgs, ?DEFAULT_SIZE),
+  io:format("pool size:~p~n", [Size]),
   WorkerQueue = append_child(Size, WorkerArgs),
-  {ok, #state{workerQueue = WorkerQueue}}.
+  {ok, #state{workerQueue = WorkerQueue, size = Size, name = ?SERVER}}.
 
 
 -spec append_child(Size :: integer(), WorkerArgs :: list()) ->
   WorkerQueue :: term().
 append_child(Size, WorkerArgs) ->
-  WorkerQueue = queue:new(),
-  [begin
-     PidName = lists:concat([pool_worker_, WorkerId]),
-     {ok, _Pid} = pool_worker:start_link(list_to_atom(PidName), WorkerArgs),
-     queue:in(PidName,WorkerQueue)
-   end || WorkerId <- lists:seq(1,Size)],
+  PidNameList = lists:foldl(
+    fun(WorkerId, List) ->
+      PidName = list_to_atom(lists:concat([pool_worker_, WorkerId])),
+      {ok, _Pid} = pool_worker:start_link(PidName, WorkerArgs),
+      [PidName | List]
+    end, [], lists:seq(1,Size)),
+  WorkerQueue = queue:from_list(PidNameList),
+  io:format("WorkerQueue len:~p~n",[queue:len(WorkerQueue)]),
   WorkerQueue.
+
+%%  同步执行同节点函数
+execute(Module, F, Args) ->
+  gen_server:call(?SERVER, {execute, Module, F, Args}).
+
+execute_1(Module, F, Args) ->
+  gen_server:cast(?SERVER, {execute, Module, F, Args}).
 
 %%--------------------------------------------------------------------
 %% @private
@@ -97,12 +107,14 @@ append_child(Size, WorkerArgs) ->
   {stop, Reason :: term(), NewState :: #state{}}).
 handle_call({execute, Module, F, Args}, _From, State) ->
   WorkerQueue = State#state.workerQueue,
-  PidName = queue:out(WorkerQueue),
-  case gen_server:call(PidName,{execute, Module, F, Args}) of
-    {ok, Reply} ->
-      NewWorkerQueue = queue:in(PidName, WorkerQueue),
-      {reply, Reply, #state{workerQueue = NewWorkerQueue}};
-    {Type, Reason} ->  {reply, {Type, Reason}, State}
+  case queue:out(WorkerQueue) of
+    {{value, PidName}, Q2}  ->
+      Reply = gen_server:call(PidName, {execute, {Module, F, Args}, {_From,State#state.name}} ),
+      {reply, Reply, #state{workerQueue = Q2, size = State#state.size - 1}};
+%%    假如拿不到进程
+    {empty, _}  ->
+      io:format(" can't  get  progress ~n"),
+      {noreply, State}
   end.
 
 %%--------------------------------------------------------------------
@@ -116,8 +128,26 @@ handle_call({execute, Module, F, Args}, _From, State) ->
   {noreply, NewState :: #state{}} |
   {noreply, NewState :: #state{}, timeout() | hibernate} |
   {stop, Reason :: term(), NewState :: #state{}}).
-handle_cast(_Request, State) ->
-  {noreply, State}.
+handle_cast({recycle, PidName}, State) ->
+  io:format("-------PidName: ~p~n-----------", [PidName]),
+  {noreply, #state{workerQueue = queue:in(PidName, State#state.workerQueue), size = State#state.size + 1,name = ?SERVER}};
+
+handle_cast({execute, Module, F, Args}, State) ->
+  WorkerQueue = State#state.workerQueue,
+  Pid =self(),
+  case queue:out(WorkerQueue) of
+    {{value, PidName}, Q2}  ->
+%%      如果运行失败记录到事件处理器
+      {ok, _} = gen_server:call(PidName, {execute, {Module, F, Args}, {Pid, State#state.name}} ),
+      {noreply, #state{workerQueue = Q2, size = State#state.size - 1}};
+%%    假如拿不到进程
+    {empty, _}  ->
+      io:format(" can't  get  progress ~n"),
+      {noreply, State}
+  end.
+
+
+%%  {noreply, #state{workerQueue = queue:in(PidName, State#state.workerQueue), size = State#state.size + 1,name = ?SERVER}}.
 
 %%--------------------------------------------------------------------
 %% @private

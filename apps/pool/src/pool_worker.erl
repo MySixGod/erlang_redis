@@ -24,7 +24,7 @@
 
 -define(SERVER, ?MODULE).
 
--record(state, {}).
+-record(state, {name}).
 
 %%%===================================================================
 %%% API
@@ -38,7 +38,7 @@
 %%--------------------------------------------------------------------
 
 start_link(PidName, WorkerArgs) ->
-  gen_server:start_link({local, PidName}, ?MODULE, [WorkerArgs], []).
+  gen_server:start_link({local, PidName}, ?MODULE, [WorkerArgs, PidName], []).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -56,8 +56,8 @@ start_link(PidName, WorkerArgs) ->
 %% @end
 %%--------------------------------------------------------------------
 
-init(_WorkerArgs) ->
-  {ok, #state{}}.
+init([_WorkerArgs, PidName]) ->
+  {ok, #state{name = PidName}}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -74,16 +74,21 @@ init(_WorkerArgs) ->
   {noreply, NewState :: #state{}, timeout() | hibernate} |
   {stop, Reason :: term(), Reply :: term(), NewState :: #state{}} |
   {stop, Reason :: term(), NewState :: #state{}}).
-handle_call({execute, Module, F, Args}, _From, State) ->
-  Reply =
-  try
-    apply(Module, F, Args) of
-    Result ->  {ok, Result}
-  catch
-    throw : Reason  -> {throw, Reason};
-    exit  : Reason  -> {exit, Reason};
-    error : Reason  -> {error, Reason}
-  end,
+
+%%{execute, {Module, F, Args}, UserFrom}
+handle_call({execute, {Module, F, Args}, {UserFrom, PoolName}}, _From, State) ->
+  Reply = try apply(Module, F, Args) of
+            Result ->  {ok, Result}
+          catch
+            throw : Reason  -> {throw, Reason};
+            exit  : Reason  -> {exit, Reason};
+            error : Reason  -> {error, Reason}
+          end,
+%%  do task completed, recycle progress
+  io:format(" ~n PoolName: ~p~n", [PoolName]),
+  gen_server:cast(PoolName, {recycle, State#state.name}),
+  io:format(" ~n UserFrom: ~p~n", [UserFrom]),
+  io:format(" ~n ----------------------------------------b--------------------------------------~n"),
   {reply, Reply, State}.
 
 %%--------------------------------------------------------------------

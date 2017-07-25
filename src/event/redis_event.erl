@@ -20,7 +20,7 @@ start_link() ->
   gen_event:start_link({local,?MODULE}).
 
 add_handle(Handle,Args) ->
-  gen_event:add_handler(?MODULE,Handle,Args).
+  gen_event:add_handler(?MODULE, Handle, Args).
 
 delete_handler(Handler, Args) ->
   gen_event:delete_handler(?SERVER, Handler, Args).
